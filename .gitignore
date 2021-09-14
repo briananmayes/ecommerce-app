@@ -1,3 +1,5 @@
+.idea/
+
 frontend/angular-ecommerce/ssl-localhost/
 
 frontend/.idea/
@@ -5,5 +7,3 @@ frontend/.idea/
 backend/.idea/
 
 backend/target/
-
-.idea/
