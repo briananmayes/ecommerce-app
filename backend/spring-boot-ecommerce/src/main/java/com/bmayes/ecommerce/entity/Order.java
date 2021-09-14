@@ -25,6 +25,9 @@ public class Order {
     @Column(name="order_tracking_number")
     private String orderTrackingNumber;
 
+    @Column(name="stripe_charge_id")
+    private String stripeChargeId;
+
     @Column(name="total_quantity")
     private int totalQuantity;
 

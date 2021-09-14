@@ -12,13 +12,21 @@ import { CheckoutService } from 'src/app/services/checkout.service';
 import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
 import { Luv2ShopValidators } from 'src/app/validators/luv2-shop-validators';
 import { isTypeOnlyImportOrExportDeclaration } from 'typescript';
+import { loadStripe } from '@stripe/stripe-js';
+import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-checkout',
   templateUrl: './checkout.component.html',
   styleUrls: ['./checkout.component.css']
 })
+
 export class CheckoutComponent implements OnInit {
+
+   //Stripe 
+   //stripePromise = loadStripe(environment.stripe);
+
 
   checkoutFormGroup: FormGroup; //collection of form controls
 
@@ -43,6 +51,7 @@ export class CheckoutComponent implements OnInit {
               private router: Router) { }
 
   ngOnInit(): void {
+
 
     this.reviewCartDetails();
 
@@ -150,10 +159,13 @@ export class CheckoutComponent implements OnInit {
   get billingAddressCountry() { return this.checkoutFormGroup.get('billingAddress.country'); }
   get billingAddressZipCode() { return this.checkoutFormGroup.get('billingAddress.zipCode'); }
 
+  
   get creditCardType() { return this.checkoutFormGroup.get('creditCard.cardType'); }
   get creditCardNumber() { return this.checkoutFormGroup.get('creditCard.cardNumber'); }
   get creditCardSecurityCode() { return this.checkoutFormGroup.get('creditCard.securityCode'); }
   get creditCardName() { return this.checkoutFormGroup.get('creditCard.nameOnCard'); }
+  get creditCardExpMonth() { return this.checkoutFormGroup.get('creditCard.expirationMonth'); }
+  get creditCardExpYear() { return this.checkoutFormGroup.get('creditCard.expirationYear'); }
   //get cardType() { return this.checkoutFormGroup.get('creditCard.cardType'); }
 
   copyShippingToBillingAddress(event){
@@ -173,10 +185,27 @@ export class CheckoutComponent implements OnInit {
           }
   }
 
+  //adding stripe methods from youtube.com/watch?v=N838KMmSHJg
+  /*getCardToken(){
+    (<any>window).Stripe.card.createToken({
+      number: this.creditCardNumber.value,
+      exp_month: this.creditCardExpMonth.value,
+      exp_year: this.creditCardExpYear.value,
+      cvc: this.creditCardSecurityCode.value
+    }, (status: number, response: any) => {
+      if(status === 200) {
+        let token = response.id;
+        console.log("the token response is " , token);
+      }
+      console.log(response.id);
+    })
+  }*/
+
   onSubmit() {
     console.log("Handling form submission");
 
     if (this.checkoutFormGroup.invalid) {
+      console.log("form is invalid");
       this.checkoutFormGroup.markAllAsTouched();
       return;
     }
@@ -185,20 +214,23 @@ export class CheckoutComponent implements OnInit {
    let order = new Order();
    order.totalPrice = this.totalPrice;
    order.totalQuantity = this.totalQuantity;
+   console.log("Order is set up...");
 
    // get cart items
    const cartItems = this.cartService.cartItems;
+   console.log("cart items are set up...");
 
    // create orderItems from cartItems
    let orderItems: OrderItem[] = [];
    for (let i=0; i < cartItems.length; i++) {
      orderItems[i] = new OrderItem(cartItems[i]);
-
    }
+   console.log("orderItems created from cart items..");
 
    // set up purchase
    let orderItemsShort: OrderItem[] = cartItems.map(tempCartItem => new OrderItem(tempCartItem));
     let purchase = new Purchase();
+    console.log("purchase is set-up...");
 
    // populate purchase - customer
    purchase.customer = this.checkoutFormGroup.controls['customer'].value; 
@@ -220,7 +252,29 @@ export class CheckoutComponent implements OnInit {
    // populate purchase  - order and orderItems
    purchase.order = order;
    purchase.orderItems = orderItems;
-   console.log(`is the url transferring: ${JSON.stringify(purchase.orderItems)}`)
+   console.log(`is the url transferring: ${JSON.stringify(purchase.orderItems)}`);
+
+
+   console.log(`the card info entered is number: ${JSON.stringify(this.creditCardNumber.value)}`);
+   //this.getCardToken();
+   //console.log(`the card token is ${JSON.stringify(this.getCardToken())}`);
+  
+   // adding chargeCreditCard() method for stripe 
+   (<any>window).Stripe.card.createToken({
+     number: this.creditCardNumber.value,
+     exp_month: this.creditCardExpMonth.value,
+     exp_year: this.creditCardExpYear.value,
+     cvc: this.creditCardSecurityCode.value
+   }, (status: number, response: any) => {
+     console.log("token was created..");
+     if (status === 200) {
+       let token = response.id;
+       console.log("token is ", token);
+       this.checkoutService.chargeCard(token, purchase);
+     } else {
+       console.log(response.error.message);
+     }
+   });
 
    // call REST API via the CheckoutService 
    this.checkoutService.placeOrder(purchase).subscribe(
@@ -239,6 +293,7 @@ export class CheckoutComponent implements OnInit {
    );
   }
 
+
   resetCart() {
     //reset cart data
     this.cartService.cartItems = [];
@@ -255,6 +310,7 @@ export class CheckoutComponent implements OnInit {
     this.router.navigateByUrl("/products");
   }
 
+  //populate the months and years based on current date
   handleMonthsAndYears() {
     const creditCardFormGroup = this.checkoutFormGroup.get('creditCard'); //create a handle to credit card form group
     const currentYear: number = new Date().getFullYear();
@@ -278,6 +334,7 @@ export class CheckoutComponent implements OnInit {
     )
   }
 
+  //populate the states from the DB
   getStates(formGroupName: string) {
     const formGroup = this.checkoutFormGroup.get(formGroupName);
 

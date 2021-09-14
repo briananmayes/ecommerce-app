@@ -1,5 +1,6 @@
 package com.bmayes.ecommerce.service;
 
+import com.bmayes.ecommerce.component.StripeClient;
 import com.bmayes.ecommerce.dao.CustomerRepository;
 import com.bmayes.ecommerce.dto.Purchase;
 import com.bmayes.ecommerce.dto.PurchaseResponse;
@@ -18,7 +19,7 @@ public class CheckoutServiceImpl implements CheckoutService {
     private CustomerRepository customerRepository;
 
     //@Autowired optional since only one constructor
-    public CheckoutServiceImpl(CustomerRepository customerRepository) {
+    public CheckoutServiceImpl(CustomerRepository customerRepository, StripeClient stripeClient) {
         this.customerRepository = customerRepository;
     }
 
@@ -41,6 +42,10 @@ public class CheckoutServiceImpl implements CheckoutService {
         order.setBillingAddress(purchase.getBillingAddress());
         order.setShippingAddress(purchase.getShippingAddress());
 
+        //get stripe charge id
+        //String stripeId = purchase.getCharge().getId();
+        //order.setStripeChargeId(stripeId);
+
         // populate customer with order
         Customer customer = purchase.getCustomer();
 
@@ -58,6 +63,8 @@ public class CheckoutServiceImpl implements CheckoutService {
 
         // save to the database
         customerRepository.save(customer);
+
+
 
         // return a response
         return new PurchaseResponse(orderTrackingNumber);

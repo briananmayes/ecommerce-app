@@ -276,7 +276,7 @@
                                 <div *ngIf="billingAddressZipCode.invalid && (billingAddressZipCode.dirty || billingAddressZipCode.touched)" class="alert alert-danger">
 
                                     <div *ngIf="billingAddressZipCode.errors.required || billingAddressZipCode.errors.notOnlyWhitespace">
-                                        ZipCod is required
+                                        ZipCode is required
                                     </div>
         
                                     <div *ngIf="billingAddressZipCode.errors.minlength">
@@ -290,7 +290,7 @@
                 </div>
 
                 <!-- credit card -->
-                <div formGroupName="creditCard" class="form-area">
+                <div formGroupName="creditCard" id="card-element" class="form-area">
                     <h3>Credit Card</h3>
 
                     <div class="row">
@@ -401,7 +401,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- Order details -->
                 <div class="form-area">
                     <h3>Review Your Order</h3>
