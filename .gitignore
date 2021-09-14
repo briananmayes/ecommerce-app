@@ -7,3 +7,5 @@ frontend/.idea/
 backend/.idea/
 
 backend/target/
+
+backend/spring-boot-ecommerce/src/main/resources/
