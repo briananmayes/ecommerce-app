@@ -1,7 +1,9 @@
-frontend/angular-ecommerce/ssl-localhost
+frontend/angular-ecommerce/ssl-localhost/
 
-frontend/.idea
+frontend/.idea/
 
-backend/.idea
+backend/.idea/
 
-backend/target
+backend/target/
+
+.idea/
