@@ -14,11 +14,18 @@ public class MyAppConfig implements WebMvcConfigurer {
     @Value("${spring.data.rest.base-path}")
     private String basePath;
 
+    @Value("${stripe.api.key}")
+    private String stripeKey;
+
     @Override
     public void addCorsMappings(CorsRegistry cors) {
 
         //set up cors mapping
         cors.addMapping(basePath + "/**").allowedOrigins(theAllowedOrigins);
+    }
+
+    public String getStripeKey() {
+        return stripeKey;
     }
 
 }
