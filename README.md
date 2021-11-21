@@ -7,6 +7,9 @@ I took this course to practice both my Angular and Java coding skills as well as
 The technologies used while developing this application: Angular, Bootstrap, Java, Spring Boot, MySQL, PostgreSQL, and Okta Oauth2 
 Local development makes use of the MySQL JDBC driver and production makes use of the PostgreSQL JDBC driver for Heroku.
 
+### feature-stripe
+This feature allows for Stripe integration via the StripeJS API. Currently, the application creates a token on the front-end and sends it to the back-end to create a Stripe charge.
+
 ## Demo
 The application can be viewed at the following link
 https://angular-ecommerce-clone.herokuapp.com/

@@ -24,9 +24,7 @@ import { environment } from 'src/environments/environment';
 
 export class CheckoutComponent implements OnInit {
 
-   //Stripe 
-   //stripePromise = loadStripe(environment.stripe);
-
+   checkoutComplete: boolean = false;
 
   checkoutFormGroup: FormGroup; //collection of form controls
 

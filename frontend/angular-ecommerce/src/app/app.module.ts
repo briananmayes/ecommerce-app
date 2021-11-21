@@ -28,6 +28,7 @@ import myAppConfig from './config/my-app-config';
 import { MembersPageComponent } from './components/members-page/members-page.component';
 import { OrderHistoryComponent } from './components/order-history/order-history.component';
 import { AuthInterceptorService } from './services/auth-interceptor.service';
+import { CheckoutStatusComponent } from './components/checkout-status/checkout-status.component';
 
 const oktaConfig = Object.assign ({
   onAuthRequired: (oktaAuth, injector) => {
@@ -69,7 +70,8 @@ const routes: Routes = [
     LoginComponent,
     LoginStatusComponent,
     MembersPageComponent,
-    OrderHistoryComponent
+    OrderHistoryComponent,
+    CheckoutStatusComponent
   ],
   imports: [
     RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }),

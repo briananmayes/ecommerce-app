@@ -23,16 +23,13 @@ public class CheckoutController {
     }
 
     @PostMapping("/purchase")
-    public PurchaseResponse placeOrder(@RequestBody Purchase purchase) {
+    public PurchaseResponse placeOrder(@RequestBody Purchase purchase, String token, String amount) {
         PurchaseResponse purchaseResponse = checkoutService.placeOrder(purchase);
         return purchaseResponse;
     }
 
     @PostMapping("/charge")
-    public Charge chargeCard(HttpServletRequest request) throws Exception {
-        String token = request.getHeader("token");
-
-        String amount = request.getHeader("amount");
+    public Charge chargeCard(@RequestBody String token, String amount) throws Exception {
         return this.stripeClient.chargeCreditCard(token, amount);
     }
 
